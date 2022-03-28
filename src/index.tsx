@@ -30,40 +30,16 @@ const Square: FC<{ v: string; click: () => void }> = ({ v, click }) => {
   );
 };
 
-const Board = () => {
-  const [squares, setSquares] = useState([""]);
-  const [xIsNext, setXIsNext] = useState(true);
-
-  const handleClick = (i: number) => {
-    if (squares[i] || winner) return;
-    const squaresAfter = squares.slice();
-    squaresAfter[i] = xIsNext ? "X" : "O";
-    setXIsNext(!xIsNext);
-    setSquares(squaresAfter);
-  };
-
+const Board: FC<{ squares: string[]; click: (i: number) => void }> = ({
+  squares,
+  click,
+}) => {
   const renderSquare = (i: number) => {
-    return (
-      <Square
-        v={squares[i]}
-        click={() => {
-          handleClick(i);
-        }}
-      />
-    );
+    return <Square v={squares[i]} click={() => click(i)} />;
   };
-
-  const winner = calculateWinner(squares);
-  let status: string;
-  if (winner) {
-    status = "Winner: " + winner;
-  } else {
-    status = "Next player: " + (xIsNext ? "X" : "O");
-  }
 
   return (
     <div>
-      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -84,13 +60,37 @@ const Board = () => {
 };
 
 const Game = () => {
+  const [history, setHistory] = useState<{ squares: string[] }[]>([
+    { squares: [] },
+  ]);
+  const [xIsNext, setXIsNext] = useState(true);
+  const current = history[history.length - 1];
+  const winner = calculateWinner(current.squares);
+  let status: string;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O");
+  }
+
+  const handleClick = (i: number) => {
+    if (current.squares[i] || winner) return;
+    const squaresAfter = current.squares.slice();
+    squaresAfter[i] = xIsNext ? "X" : "O";
+    setXIsNext(!xIsNext);
+    setHistory([...history, { squares: squaresAfter }]);
+  };
+
   return (
     <div className="game">
       <div className="game-board">
-        <Board />
+        <Board
+          squares={current.squares}
+          click={(i: number) => handleClick(i)}
+        />
       </div>
       <div className="game-info">
-        <div>{/* status */}</div>
+        <div>{status}</div>
         <ol>{/* TODO */}</ol>
       </div>
     </div>

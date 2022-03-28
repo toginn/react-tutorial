@@ -1,14 +1,25 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-const Square: FC<{ value: number }> = ({ value }) => {
-  return <button className="square">{value}</button>;
+const Square: FC<{ v: number }> = ({ v }) => {
+  const [value, setValue] = useState("");
+
+  return (
+    <button
+      className="square"
+      onClick={() => {
+        setValue("X");
+      }}
+    >
+      {value}
+    </button>
+  );
 };
 
 const Board = () => {
   const renderSquare = (i: number) => {
-    return <Square value={i} />;
+    return <Square v={i} />;
   };
 
   const status = "Next player: X";

@@ -13,11 +13,15 @@ const Square: FC<{ v: string; click: () => void }> = ({ v, click }) => {
 
 const Board = () => {
   const [squares, setSquares] = useState([""]);
+  const [xIsNext, setXIsNext] = useState(true);
+
   const handleClick = (i: number) => {
     const squaresAfter = squares.slice();
-    squaresAfter[i] = "X";
+    squaresAfter[i] = xIsNext ? "X" : "O";
+    setXIsNext(!xIsNext);
     setSquares(squaresAfter);
   };
+
   const renderSquare = (i: number) => {
     return (
       <Square
@@ -29,7 +33,7 @@ const Board = () => {
     );
   };
 
-  const status = "Next player: X";
+  const status = "Next player: " + (xIsNext ? "X" : "O");
 
   return (
     <div>

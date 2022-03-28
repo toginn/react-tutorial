@@ -1,25 +1,32 @@
+import { click } from "@testing-library/user-event/dist/click";
 import React, { FC, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-const Square: FC<{ v: number }> = ({ v }) => {
-  const [value, setValue] = useState("");
-
+const Square: FC<{ v: string; click: () => void }> = ({ v, click }) => {
   return (
-    <button
-      className="square"
-      onClick={() => {
-        setValue("X");
-      }}
-    >
-      {value}
+    <button className="square" onClick={click}>
+      {v}
     </button>
   );
 };
 
 const Board = () => {
+  const [squares, setSquares] = useState([""]);
+  const handleClick = (i: number) => {
+    const squaresAfter = squares.slice();
+    squaresAfter[i] = "X";
+    setSquares(squaresAfter);
+  };
   const renderSquare = (i: number) => {
-    return <Square v={i} />;
+    return (
+      <Square
+        v={squares[i]}
+        click={() => {
+          handleClick(i);
+        }}
+      />
+    );
   };
 
   const status = "Next player: X";
